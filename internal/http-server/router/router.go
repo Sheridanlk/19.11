@@ -12,7 +12,6 @@ func Setup(log *slog.Logger, storage *storage.Storage) *http.ServeMux {
 	rout := http.NewServeMux()
 	rout.HandleFunc("/links", status.New(log, storage))
 	rout.HandleFunc("/links/pdf", uploadpdf.New(log, storage))
-	// TODO: add routes
 
 	return rout
 }
