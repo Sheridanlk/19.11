@@ -1,0 +1,6 @@
+env: env
+data_path: ./data
+HTTPServer:
+  address: localhost:8080
+  timeout: 4s
+  idle_timeout: 60s
