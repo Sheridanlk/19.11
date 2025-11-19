@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"web-server/internal/lib/statuses"
+	"web-server/internal/storage"
 )
 
 type Request struct {
@@ -11,21 +13,17 @@ type Request struct {
 }
 
 type Response struct {
-	Statuses []string `json:"statuses"`
-	BachID   int64    `json:"batch_id"`
+	Links    map[string]storage.LinkStatus `json:"links"`
+	LinksNum int64                         `json:"links_num"`
 }
 
 type LinksSaver interface {
-	SaveLinksAndStatus(links []string, statuses []string) (int64, error)
+	SaveLinksAndStatuses(map[string]storage.LinkStatus) (int64, error)
 }
 
-type StatusGetter interface {
-	GetStatuses(links []string) ([]string, error)
-}
-
-func New(log *slog.Logger, linksSaver LinksSaver, statusGetter StatusGetter) http.HandlerFunc {
+func New(log *slog.Logger, linksSaver LinksSaver) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const op = "status.links.Status.New"
+		const op = "links.Status.New"
 
 		log := log.With("op", op)
 
@@ -49,16 +47,12 @@ func New(log *slog.Logger, linksSaver LinksSaver, statusGetter StatusGetter) htt
 		}
 		log.Info("request body decoded", slog.Any("request", req))
 
-		statuses, err := statusGetter.GetStatuses(req.Links)
-		if err != nil {
-			log.Error("failed to get statuses", "error", err)
-
-			w.WriteHeader(http.StatusInternalServerError)
-
-			return
+		linksWithStat := make(map[string]storage.LinkStatus)
+		for _, link := range req.Links {
+			linksWithStat[link] = statuses.GetStatus(link)
 		}
 
-		batchID, err := linksSaver.SaveLinksAndStatus(req.Links, statuses)
+		batchID, err := linksSaver.SaveLinksAndStatuses(linksWithStat)
 		if err != nil {
 			log.Error("failed to save links and statuses", "error", err)
 
@@ -70,8 +64,8 @@ func New(log *slog.Logger, linksSaver LinksSaver, statusGetter StatusGetter) htt
 		log.Info("batch saved", slog.Int64("id", batchID))
 
 		resp := Response{
-			Statuses: statuses,
-			BachID:   batchID,
+			Links:    linksWithStat,
+			LinksNum: batchID,
 		}
 
 		if err := json.NewEncoder(w).Encode(resp); err != nil {

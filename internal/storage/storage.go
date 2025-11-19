@@ -42,9 +42,8 @@ func (s *Storage) Load() error {
 	s.batches = make(map[int64]*LinkBatch, len(parsedData.Batches))
 	for _, batch := range parsedData.Batches {
 		s.batches[batch.ID] = &LinkBatch{
-			ID:       batch.ID,
-			Links:    batch.Links,
-			Statuses: batch.Statuses,
+			ID:    batch.ID,
+			Links: batch.Links,
 		}
 	}
 	return nil
@@ -72,6 +71,32 @@ func (s *Storage) Save() error {
 		return err
 	}
 	return os.Rename(tmp, s.path)
+}
+
+func (s *Storage) SaveLinksAndStatuses(linksAndStatus map[string]LinkStatus) (int64, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	id := s.NextID
+	s.NextID++
+
+	batch := &LinkBatch{
+		ID:    id,
+		Links: linksAndStatus,
+	}
+
+	s.batches[id] = batch
+
+	return id, nil
+}
+
+func (s *Storage) LoadLinsksAndSatsuses(link_num int64) map[string]LinkStatus {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	batch := s.batches[link_num]
+
+	return batch.Links
 }
 
 // TODO: Realise methods to manipulate storage data

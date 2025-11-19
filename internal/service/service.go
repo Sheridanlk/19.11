@@ -16,7 +16,6 @@ type Service struct {
 
 func New(log *slog.Logger, path string, addres string, readTimeout time.Duration, writeTimeout time.Duration, idleTimeout time.Duration) *Service {
 	storage := storage.New(path)
-	storage.Load()
 
 	router := router.Setup(log, storage)
 
@@ -37,6 +36,7 @@ func New(log *slog.Logger, path string, addres string, readTimeout time.Duration
 func (s *Service) Start() error {
 	const op = "service.Start"
 
+	s.Storage.Load()
 	log := slog.With("op", op)
 	log.Info("Starting server", "address", s.Server.Addr)
 

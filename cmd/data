@@ -1,0 +1,47 @@
+{
+  "next_id": 7,
+  "batches": [
+    {
+      "id": 6,
+      "links": {
+        "23123412": "not available",
+        "google.com": "available"
+      }
+    },
+    {
+      "id": 1,
+      "links": {
+        "aboba.ww": "not available",
+        "google.com": "available"
+      }
+    },
+    {
+      "id": 2,
+      "links": {
+        "google.com": "available",
+        "https://metanit.com/go/tutorial/2.14.php": "not available"
+      }
+    },
+    {
+      "id": 3,
+      "links": {
+        "google.com": "available",
+        "https://translate.google.com/?sl=en\u0026tl=ru\u0026text=assignment%20to%20entry%20in%20nil%20map\u0026op=translate": "available"
+      }
+    },
+    {
+      "id": 4,
+      "links": {
+        "aoaoaoa": "not available",
+        "google.com": "available"
+      }
+    },
+    {
+      "id": 5,
+      "links": {
+        "aoaoaoa": "not available",
+        "google.com": "available"
+      }
+    }
+  ]
+}
