@@ -70,6 +70,6 @@ func New(log *slog.Logger, linksLoader LinksLoader) http.HandlerFunc {
 
 			return
 		}
-		w.WriteHeader(http.StatusOK)
+
 	}
 }

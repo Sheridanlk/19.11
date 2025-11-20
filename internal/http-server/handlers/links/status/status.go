@@ -76,6 +76,5 @@ func New(log *slog.Logger, linksSaver LinksSaver) http.HandlerFunc {
 			return
 		}
 
-		w.WriteHeader(http.StatusOK)
 	}
 }
