@@ -98,5 +98,3 @@ func (s *Storage) LoadLinsksAndSatsuses(link_num int64) map[string]LinkStatus {
 
 	return batch.Links
 }
-
-// TODO: Realise methods to manipulate storage data
